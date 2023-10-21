@@ -22,12 +22,22 @@ or you can choose many CPU thread you want to use in your computer by ```-j{num}
 
 ## Result
 
-origin: ![](lena.png)
+origin:  
 
-gray: ![](lena_gray.png)
+![](lena.png)
 
-2D-DCT: ![](lena_dct_2d.png)
+gray:  
 
-2D-iDCT reconstruct image: ![](lena_idct_2d.png)
+![](lena_gray.png)
 
-two 1D-iDCT: ![](lena_dct_1d.png)
+2D-DCT:  
+
+![](lena_dct_2d.png)
+
+2D-iDCT reconstruct image:  
+
+![](lena_idct_2d.png)
+
+two 1D-iDCT:  
+
+![](lena_dct_1d.png)
