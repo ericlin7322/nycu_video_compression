@@ -3,6 +3,7 @@ import psnr
 import dct1
 import dct2
 import time
+import numpy as np
 import argparse
 
 parser = argparse.ArgumentParser(description='multiprocess')
@@ -19,6 +20,10 @@ dct1d_coeffs = dct1.dct(image)
 end_time = time.time()
 runtime_2d_dct = end_time - start_time
 print(f"Runtime for 1D-DCT: {runtime_2d_dct:.6f} seconds")
+dct1d_log = np.log(np.abs(dct1d_coeffs))
+cv2.imshow("lena_dct_1d", dct1d_log)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
 cv2.imwrite("lena_dct_1d.png", dct1d_coeffs)
 
 # 2D-DCT to transform "lena.png" to DCT coefficients.
@@ -27,6 +32,10 @@ dct2d_coeffs = dct2.dct(image, j)
 end_time = time.time()
 runtime_2d_dct = end_time - start_time
 print(f"Runtime for 2D-DCT: {runtime_2d_dct:.6f} seconds")
+dct2d_log = np.log(np.abs(dct2d_coeffs))
+cv2.imshow("lena_dct_2d", dct2d_log)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
 cv2.imwrite("lena_dct_2d.png", dct2d_coeffs)
 
 # 2D-DCT's DCT coefficients reconstruct

@@ -32,12 +32,20 @@ gray:
 
 2D-DCT:  
 
+using imshow():  
+![](dct_2d.png)
+
+using imwrite():  
 ![](lena_dct_2d.png)
 
 2D-iDCT reconstruct image:  
 
 ![](lena_idct_2d.png)
 
-two 1D-iDCT:  
+two 1D-DCT:  
 
+using imshow():  
+![](dct_1d.png)
+
+using imwrite():  
 ![](lena_dct_1d.png)
