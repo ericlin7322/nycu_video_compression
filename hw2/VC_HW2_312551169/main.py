@@ -21,10 +21,8 @@ end_time = time.time()
 runtime_2d_dct = end_time - start_time
 print(f"Runtime for 1D-DCT: {runtime_2d_dct:.6f} seconds")
 dct1d_log = np.log(np.abs(dct1d_coeffs))
-cv2.imshow("lena_dct_1d", dct1d_log)
-cv2.waitKey(0)
-cv2.destroyAllWindows()
-cv2.imwrite("lena_dct_1d.png", dct1d_coeffs)
+dct1d_log_nor = (np.round((dct1d_log - np.min(dct1d_log)) / (np.max(dct1d_log) - np.min(dct1d_log)))*255).astype(np.uint8)
+cv2.imwrite("lena_dct_1d.png", dct1d_log_nor)
 
 # 2D-DCT to transform "lena.png" to DCT coefficients.
 start_time = time.time()
@@ -33,10 +31,17 @@ end_time = time.time()
 runtime_2d_dct = end_time - start_time
 print(f"Runtime for 2D-DCT: {runtime_2d_dct:.6f} seconds")
 dct2d_log = np.log(np.abs(dct2d_coeffs))
-cv2.imshow("lena_dct_2d", dct2d_log)
-cv2.waitKey(0)
-cv2.destroyAllWindows()
-cv2.imwrite("lena_dct_2d.png", dct2d_coeffs)
+dct2d_log_nor = (np.round((dct2d_log - np.min(dct2d_log)) / (np.max(dct2d_log) - np.min(dct2d_log)))*255).astype(np.uint8)
+cv2.imwrite("lena_dct_2d.png", dct2d_log_nor)
+
+# two 1D-DCT's DCT coefficients reconstruct
+start_time = time.time()
+idct1d_coeffs = dct1.idct(dct1d_coeffs)
+end_time = time.time()
+runtime_2d_dct = end_time - start_time
+print(f"Runtime for 1D-iDCT: {runtime_2d_dct:.6f} seconds")
+psnr.psnr(image, idct1d_coeffs)
+cv2.imwrite("lena_idct_1d.png", idct1d_coeffs)
 
 # 2D-DCT's DCT coefficients reconstruct
 start_time = time.time()
@@ -46,12 +51,3 @@ runtime_2d_dct = end_time - start_time
 print(f"Runtime for 2D-iDCT: {runtime_2d_dct:.6f} seconds")
 psnr.psnr(image, idct2d_coeffs)
 cv2.imwrite("lena_idct_2d.png", idct2d_coeffs)
-
-# two 1D-DCT's DCT coefficients reconstruct
-start_time = time.time()
-idct1d_coeffs = dct2.idct(dct1d_coeffs, j)
-end_time = time.time()
-runtime_2d_dct = end_time - start_time
-print(f"Runtime for 1D-iDCT: {runtime_2d_dct:.6f} seconds")
-psnr.psnr(image, idct1d_coeffs)
-cv2.imwrite("lena_idct_1d.png", idct1d_coeffs)
