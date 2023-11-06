@@ -8,7 +8,7 @@
 
 ```python main.py```
 
-to run different search range, can add ```-s``` parser, default is 8
+to run different search range, can add ```-s``` parameters, default is 8
 
 ```python main.py -s 16```
 
@@ -18,7 +18,7 @@ to run three-step search
 
 ## Result
 
-oring: 
+origin: 
 
 ![](one_gray.png) ![](two_gray.png)
 
