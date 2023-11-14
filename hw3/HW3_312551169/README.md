@@ -8,14 +8,6 @@
 
 ```python main.py```
 
-to run different search range, can add ```-s``` parameters, default is 8
-
-```python main.py -s 16```
-
-to run three-step search
-
-```python tss.py```
-
 ## Result
 
 origin: 
