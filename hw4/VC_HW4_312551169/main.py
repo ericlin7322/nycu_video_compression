@@ -1,6 +1,47 @@
 import numpy as np
 import cv2
 
+def process_image(img):
+    rows, cols = img.shape
+    encoded_blocks = []
+
+    # 8x8 block-based DCT coefficients of “lena.png.”
+    # Use a raster scan to visit all 8x8 blocks in these images.
+    for i in range(0, rows, 8):
+        for j in range(0, cols, 8):
+            block = img[i:i+8, j:j+8]
+            dct_quantized_block = block_dct_quantize(block)
+            encoded_block = RLE_encoding(dct_quantized_block)
+            encoded_blocks.append(encoded_block)
+
+    decoded_blocks = []
+
+    # Do the run length decoding and IDCT to recover the image.
+    for encoded_block in encoded_blocks:
+        decoded_block = RLE_decode(encoded_block, (8,8))
+        decoded_block = block_idct_dequantize(decoded_block)
+        decoded_blocks.append(decoded_block)
+
+    decoded_image = np.zeros_like(img)
+
+    index = 0
+    for i in range(0, rows, 8):
+        for j in range(0, cols, 8):
+            decoded_image[i:i+8, j:j+8] = decoded_blocks[index]
+            index += 1
+
+    return decoded_image.astype(np.uint8)
+
+# Quantize the coefficients with 16-bit for DC and 8-bit for AC.
+def block_dct_quantize(image_block, quant_dc=16, quant_ac=8):
+    dct_block = cv2.dct(np.float32(image_block))
+    
+    dct_block[0, 0] = np.round(dct_block[0, 0] / quant_dc)
+    dct_block[1:, 1:] = np.round(dct_block[1:, 1:] / quant_ac)
+
+    return dct_block
+
+# Do the run length encoding by using a zigzag scan to visit all pixels in one block.
 def RLE_encoding(img, bits=8):
     encoded = []
     count = 0
@@ -70,15 +111,6 @@ def RLE_decode(encoded, shape):
     dimg = np.array(zigzag_to_2d_custom(decoded, shape)).reshape(shape)
     return dimg
 
-
-def block_dct_quantize(image_block, quant_dc=16, quant_ac=8):
-    dct_block = cv2.dct(np.float32(image_block))
-    
-    dct_block[0, 0] = np.round(dct_block[0, 0] / quant_dc)
-    dct_block[1:, 1:] = np.round(dct_block[1:, 1:] / quant_ac)
-
-    return dct_block
-
 def block_idct_dequantize(dct_block, quant_dc=16, quant_ac=8):
     dct_block[0, 0] *= quant_dc
     dct_block[1:, 1:] *= quant_ac
@@ -86,35 +118,6 @@ def block_idct_dequantize(dct_block, quant_dc=16, quant_ac=8):
     idct_block = cv2.idct(dct_block)
     
     return idct_block
-
-def process_image(img):
-    rows, cols = img.shape
-
-    encoded_blocks = []
-
-    for i in range(0, rows, 8):
-        for j in range(0, cols, 8):
-            block = img[i:i+8, j:j+8]
-            dct_quantized_block = block_dct_quantize(block)
-            encoded_block = RLE_encoding(dct_quantized_block)
-            encoded_blocks.append(encoded_block)
-
-    decoded_blocks = []
-
-    for encoded_block in encoded_blocks:
-        decoded_block = RLE_decode(encoded_block, (8,8))
-        decoded_block = block_idct_dequantize(decoded_block)
-        decoded_blocks.append(decoded_block)
-
-    decoded_image = np.zeros_like(img)
-
-    index = 0
-    for i in range(0, rows, 8):
-        for j in range(0, cols, 8):
-            decoded_image[i:i+8, j:j+8] = decoded_blocks[index]
-            index += 1
-
-    return decoded_image.astype(np.uint8)
 
 img = cv2.imread("lena.png", cv2.IMREAD_GRAYSCALE)
 output_image = process_image(img)
